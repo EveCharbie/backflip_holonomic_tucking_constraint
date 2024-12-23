@@ -24,7 +24,7 @@ keywords = {Holonomic constraint, Constraint dynamics, Predictive simulation, Op
 # Status
 | Type | Status |
 |---|---|
-| Zenodo  |  |
+| Zenodo  | [![DOI](https://zenodo.org/badge/589623975.svg)](https://doi.org/10.5281/zenodo.14546204) |
 
 # How to install dependencies
 In order to run the code, you need to install the following packages from [pyomeca]( https://github.com/pyomeca):
