@@ -33,9 +33,10 @@ def force_treatment(forces_insoles, time, first_peak_time):
 
 
 # Get simulation forces
-sol_CL = "../results/with_noise/HTC/sol_3_CVG.pkl"
+sol_CL = "../results/backflip_Vpost_submission_collision_feb25/htc/sol_3_CVG.pkl"
 data_CL = pd.read_pickle(sol_CL)
 lambdas = data_CL["lambda"]
+format_graph = "svg"
 
 fig, ax = plt.subplots(1, 1)
 
@@ -84,7 +85,7 @@ ax.legend(bbox_to_anchor=(1.0, 1), loc="upper left")
 ax.set_xlabel("Time [s]")
 ax.set_ylabel("Force on the tibia [N]")
 plt.subplots_adjust(right=0.7)
-plt.savefig("hand_leg_forces_experimental_vs_simulations.svg", format="svg")
+plt.savefig("hand_leg_forces_experimental_vs_simulations." + format_graph, format=format_graph)
 plt.show()
 
 print("Max lambda norm : ", np.max(np.linalg.norm(lambdas, axis=0)))

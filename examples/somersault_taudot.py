@@ -6,7 +6,6 @@ This script is used to solve the somersault problem with 5 phases and a pelvis l
 
 # --- Import package --- #
 import numpy as np
-from scipy.interpolate import interp1d
 from bioptim import (
     BiorbdModel,
     InterpolationType,
@@ -42,7 +41,7 @@ from src.multistart import prepare_multi_start
 from src.phase_transitions import custom_takeoff
 from src.objectives import WEIGHTS
 from src.initial_guess_utils import interpolate_array
-from constants import MODEL_PATHS, PHASE_TIME, N_SHOOTING
+from .constants import MODEL_PATHS, PHASE_TIME, N_SHOOTING
 
 # --- Prepare ocp --- #
 def prepare_ocp(biorbd_model_path, phase_time, n_shooting, WITH_MULTI_START, seed=0):

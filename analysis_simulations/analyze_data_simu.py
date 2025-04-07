@@ -114,7 +114,7 @@ def adjust_q_with_full_floating_base(q: np.ndarray) -> np.ndarray:
 
 
 # Solution with and without holonomic constraints
-common_path = "../results/backflip_Vpost_submission_v3/"
+common_path = "../results/backflip_Vpost_submission_collision_feb25/"
 path_without = common_path + "ktc/"
 path_CL = common_path + "htc/"
 path_free = common_path + "ntc/"
@@ -131,7 +131,6 @@ else:
     end_file = ".pkl"
 
 biorbd_model_path = (PATH_MODEL_1_CONTACT, PATH_MODEL, PATH_MODEL, PATH_MODEL, PATH_MODEL_1_CONTACT)
-phase_time = (0.2, 0.2, 0.3, 0.3, 0.3)
 n_shooting = (40, 20, 30, 30, 40)
 n_nodes = tuple(value + 1 for value in n_shooting)
 
@@ -143,11 +142,6 @@ for file in os.listdir(path_without):
         if data["cost"] < min_cost_without:
             min_cost_without = data["cost"]
             sol_without = path_without + file
-            # bioptim_sol_path = path_without + file.replace(".pkl", "_sol.pkl")
-            # with open(bioptim_sol_path, "rb") as f:
-            #     bioptim_sol_without = pickle.load(f)
-            # bioptim_sol_without.ocp = prepare_ocp_without(biorbd_model_path, phase_time, n_shooting, False, 0)
-            # bioptim_sol_without.detailed_cost()
 print("Min cost without: ", min_cost_without)
 
 min_cost_CL = np.inf
@@ -186,12 +180,22 @@ tuck_node_end = tuck_node_start + n_nodes[2]
 PLOT_TAU_FLAG = True
 PLOT_INERTIA_FLAG = True
 PLOT_ENERGY_FLAG = True
-format_graph = "png"
+# format_graph = "png"
 # format_graph = "pdf"
-# format_graph = "svg"
+format_graph = "svg"
 
 
 phase_delimiter = ["-", "--", ":", "-.", "-"]
+
+plt.figure()
+plt.plot(0, 1, "-k", label="end phase 1 - start phase 2")
+plt.plot(0, 1, "--k", label="end phase 2 - start phase 3")
+plt.plot(0, 1, ":k", label="end phase 3 - start phase 4")
+plt.plot(0, 1, "-.k", label="end phase 4 - start phase 5")
+plt.legend()
+plt.savefig("delimiters" + "." + format_graph, format=format_graph, dpi=300)
+plt.close()
+
 dof_names = [
     "Pelvis \n(Translation Y)",
     "Pelvis \n(Translation Z)",
