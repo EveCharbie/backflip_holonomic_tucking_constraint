@@ -8,6 +8,7 @@ import pickle
 from matplotlib import rcParams
 
 from examples.somersault_taudot import prepare_ocp as prepare_ocp_without
+from examples.constants import PHASE_TIME, N_SHOOTING
 from src.actuators import Joint, actuator_function
 from src.actuator_constants import ACTUATORS
 from src.constants import (
@@ -131,9 +132,8 @@ else:
     end_file = ".pkl"
 
 biorbd_model_path = (PATH_MODEL_1_CONTACT, PATH_MODEL, PATH_MODEL, PATH_MODEL, PATH_MODEL_1_CONTACT)
-n_shooting = (40, 20, 30, 30, 40)
+n_shooting = N_SHOOTING
 n_nodes = tuple(value + 1 for value in n_shooting)
-
 
 min_cost_without = np.inf
 for file in os.listdir(path_without):

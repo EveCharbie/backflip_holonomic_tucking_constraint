@@ -4,28 +4,29 @@ import os
 import numpy as np
 import pickle
 
+from examples.constants import PHASE_TIME, N_SHOOTING
 from examples.somersault_taudot import prepare_ocp as prepare_ocp_free
 from examples.somersault_htc_taudot import prepare_ocp as prepare_ocp_HTC
 from examples.somersault_ktc_taudot import prepare_ocp as prepare_ocp_KTC
 from src.constants import PATH_MODEL, PATH_MODEL_1_CONTACT
 
 biorbd_model_path = (PATH_MODEL_1_CONTACT, PATH_MODEL, PATH_MODEL, PATH_MODEL, PATH_MODEL_1_CONTACT)
-phase_time = (0.2, 0.2, 0.3, 0.3, 0.3)
-n_shooting = (40, 20, 30, 30, 40)
+phase_time = PHASE_TIME
+n_shooting = N_SHOOTING
 
 # folder = "with_noise_same_computer/"
-folder = "../results/backflip_Vpost_submission_v2/"
-folder_HTC = folder + "htc/"
-folder_KTC = folder + "ktc/"
-folder_NTC = folder + "htc/"
+common_path = "../results/backflip_Vpost_submission_collision_feb25/"
+folder_HTC = common_path + "htc/"
+folder_KTC = common_path + "ktc/"
+folder_NTC = common_path + "htc/"
 
 file_name = []
-for config, (folder, str_suffix) in enumerate(zip([folder_KTC, folder_NTC, folder_HTC], ["KTC", "NTC", "HTC"])):
-    files = [name for name in os.listdir(folder) if name.endswith("_CVG.pkl")]
+for config, (common_path, str_suffix) in enumerate(zip([folder_KTC, folder_NTC, folder_HTC], ["KTC", "NTC", "HTC"])):
+    files = [name for name in os.listdir(common_path) if name.endswith("_CVG.pkl")]
     smallest_name, smallest_value = "0", np.inf
     for file in files:
 
-        data = pickle.load(open(folder + file, "rb"))
+        data = pickle.load(open(common_path + file, "rb"))
 
         if data["cost"] < smallest_value:
             smallest_value = data["cost"]

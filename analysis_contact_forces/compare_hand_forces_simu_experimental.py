@@ -33,7 +33,7 @@ def force_treatment(forces_insoles, time, first_peak_time):
 
 
 # Get simulation forces
-sol_CL = "../results/backflip_Vpost_submission_collision_feb25/htc/sol_3_CVG.pkl"
+sol_CL = "../results/backflip_Vpost_submission_collision_feb25/htc/sol_13_CVG.pkl"
 data_CL = pd.read_pickle(sol_CL)
 lambdas = data_CL["lambda"]
 format_graph = "svg"

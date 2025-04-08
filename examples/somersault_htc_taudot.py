@@ -48,7 +48,7 @@ from src.collision import transition_pre_with_collision
 from src.save_load_helpers import get_created_data_from_pickle
 from src.save_results import save_results_holonomic_taudot, save_sol_no_ocp
 from src.initial_guess_utils import interpolate_array
-from constants import MODEL_PATHS, PHASE_TIME, N_SHOOTING
+from examples.constants import MODEL_PATHS, PHASE_TIME, N_SHOOTING
 
 # --- Prepare ocp --- #
 def prepare_ocp(biorbd_model_path: tuple, phase_time: tuple, n_shooting: tuple, WITH_MULTI_START: bool, seed=0):

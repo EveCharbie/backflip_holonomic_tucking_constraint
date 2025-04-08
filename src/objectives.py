@@ -62,19 +62,19 @@ def minimize_actuator_torques_CL(controller: PenaltyController, actuators) -> ca
 WEIGHTS = {
     "0_COM_VELOCITY": -1,
     "0_CONTACT_FORCES": 5,
-    "4_COM_VELOCITY": 25, #todo: divide by 4
+    "4_COM_VELOCITY": 25,
     "4_COM_POSITION": 100,
     "4_STATE": 100,
-    "0_TIME": 1,  # 1000,
-    "1_TIME": 1,  # 10,
-    "2_TIME": -10,  # -10,
-    "3_TIME": 1,  # 10,
-    "4_TIME": 1,  # 100,
-    "0_TORQUE_RATIO": 1, # 0.1
-    "1_TORQUE_RATIO": 1, # 0.1
-    "2_TORQUE_RATIO": 1, # 0.1
-    "3_TORQUE_RATIO": 1, # 0.1
-    "4_TORQUE_RATIO": 1, # 0.1
+    "0_TIME": 1,
+    "1_TIME": 1,
+    "2_TIME": -10,
+    "3_TIME": 1,
+    "4_TIME": 1,
+    "0_TORQUE_RATIO": 1,
+    "1_TORQUE_RATIO": 1,
+    "2_TORQUE_RATIO": 1,
+    "3_TORQUE_RATIO": 1,
+    "4_TORQUE_RATIO": 1,
     "TAUDOT": 1e-6,
     "TAU_DERIVATIVE": 1,
 }
@@ -90,7 +90,6 @@ def add_objectives(objective_functions, actuators, weights: dict = None):
         ObjectiveFcn.Mayer.MINIMIZE_COM_VELOCITY, node=Node.END, weight=weights["0_COM_VELOCITY"], axes=Axis.Z, phase=0
     )
     objective_functions.add(
-        # ObjectiveFcn.Mayer.MINIMIZE_TIME, weight=weights["0_TIME"], min_bound=0.1, max_bound=0.4, phase=0
         ObjectiveFcn.Mayer.MINIMIZE_TIME,
         weight=weights["0_TIME"],
         min_bound=0.3,

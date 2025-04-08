@@ -41,7 +41,7 @@ from src.actuator_constants import ACTUATORS, initialize_tau
 from src.multistart import prepare_multi_start
 from src.phase_transitions import custom_takeoff
 from src.initial_guess_utils import interpolate_array
-from constants import MODEL_PATHS, PHASE_TIME, N_SHOOTING
+from examples.constants import MODEL_PATHS, PHASE_TIME, N_SHOOTING
 
 # --- Prepare ocp --- #
 def prepare_ocp(biorbd_model_path, phase_time, n_shooting, WITH_MULTI_START, seed=0):
