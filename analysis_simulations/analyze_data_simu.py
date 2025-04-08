@@ -174,8 +174,10 @@ print("Residual forces at take-off without: ", np.linalg.norm(data_without["cont
 print("Residual forces at take-off CL: ", np.linalg.norm(data_CL["contact_forces"][0][:, -1]), "N")
 print("Residual forces at take-off free: ", np.linalg.norm(data_free["contact_forces"][0][:, -1]), "N")
 
+aerial_node_start = n_nodes[0]
 tuck_node_start = n_nodes[0] + n_nodes[1]
 tuck_node_end = tuck_node_start + n_nodes[2]
+aerial_node_end = n_nodes[0] + n_nodes[1] + n_nodes[2] + n_nodes[3]
 
 PLOT_TAU_FLAG = True
 PLOT_INERTIA_FLAG = True
@@ -1104,7 +1106,7 @@ if PLOT_TAU_FLAG:
 
     axs.plot(
         time_vector_free,
-        np.abs(tau_free_ratio_all[3, :]),
+        np.abs(tau_free_ratio_all[2, :]),
         color="tab:green",
         label="No tucking constraint",
         alpha=0.73,
@@ -1112,14 +1114,14 @@ if PLOT_TAU_FLAG:
     )
     axs.plot(
         time_tuck_free,
-        np.abs(tau_free_ratio_all[3, tuck_node_start:tuck_node_end]),
+        np.abs(tau_free_ratio_all[2, tuck_node_start:tuck_node_end]),
         color="tab:green",
         alpha=0.73,
         linewidth=3,
     )
     axs.plot(
         time_vector_without,
-        np.abs(tau_without_ratio_all)[3, :],
+        np.abs(tau_without_ratio_all)[2, :],
         color="tab:blue",
         label="Kinematic tucking constraints",
         alpha=0.73,
@@ -1127,14 +1129,14 @@ if PLOT_TAU_FLAG:
     )
     axs.plot(
         time_tuck_without,
-        np.abs(tau_without_ratio_all[3, tuck_node_start:tuck_node_end]),
+        np.abs(tau_without_ratio_all[2, tuck_node_start:tuck_node_end]),
         color="tab:blue",
         alpha=0.73,
         linewidth=3,
     )
     axs.plot(
         time_vector_CL,
-        np.abs(tau_CL_ratio_all[3, :]),
+        np.abs(tau_CL_ratio_all[2, :]),
         color="tab:orange",
         label="Holonomic tucking constraints",
         alpha=0.73,
@@ -1142,7 +1144,7 @@ if PLOT_TAU_FLAG:
     )
     axs.plot(
         time_tuck_CL,
-        np.abs(tau_CL_ratio_all[3, tuck_node_start:tuck_node_end]),
+        np.abs(tau_CL_ratio_all[2, tuck_node_start:tuck_node_end]),
         color="tab:orange",
         alpha=0.73,
         linewidth=3,
@@ -1167,33 +1169,73 @@ if PLOT_TAU_FLAG:
     plt.savefig("tau_ratio_hip" + "." + format_graph, format=format_graph, dpi=300)
     plt.show()
 
-    hip_tau_CL = np.trapz(np.abs(tau_CL[2, 21:104]), x=time_vector_CL[21:104])
-    hip_tau_without = np.trapz(np.abs(tau_without[2, 21:104]), x=time_vector_without[21:104])
-    hip_tau_free = np.trapz(np.abs(tau_free[2, 21:104]), x=time_vector_free[21:104])
+    hip_tau_CL = np.trapz(np.abs(tau_CL[2, aerial_node_start:aerial_node_end]), x=time_vector_CL[aerial_node_start:aerial_node_end])
+    hip_tau_without = np.trapz(np.abs(tau_without[2, aerial_node_start:aerial_node_end]), x=time_vector_without[aerial_node_start:aerial_node_end])
+    hip_tau_free = np.trapz(np.abs(tau_free[2, aerial_node_start:aerial_node_end]), x=time_vector_free[aerial_node_start:aerial_node_end])
     print("Hip tau CL: ", hip_tau_CL)
     print("Hip tau without: ", hip_tau_without)
     print("Hip tau free: ", hip_tau_free)
     print(f"A reduction of {(hip_tau_without - hip_tau_CL) / hip_tau_without * 100:.2f}% with the HTC")
     print(f"A reduction of {(hip_tau_free - hip_tau_CL) / hip_tau_free * 100:.2f}% with the NTC")
 
-    arm_tau_CL = np.trapz(np.abs(tau_CL[0, 21:104]) + np.abs(tau_CL[1, 21:104]), x=time_vector_CL[21:104])
+    hip_tau_CL_ratio_all = np.trapz(np.abs(tau_CL_ratio_all[2, aerial_node_start:aerial_node_end]), x=time_vector_CL[aerial_node_start:aerial_node_end])
+    hip_tau_without_ratio_all = np.trapz(np.abs(tau_without_ratio_all[2, aerial_node_start:aerial_node_end]), x=time_vector_without[aerial_node_start:aerial_node_end])
+    hip_tau_free_ratio_all = np.trapz(np.abs(tau_free_ratio_all[2, aerial_node_start:aerial_node_end]), x=time_vector_free[aerial_node_start:aerial_node_end])
+    print("Hip physiological tau CL: ", hip_tau_CL_ratio_all)
+    print("Hip physiological tau without: ", hip_tau_without_ratio_all)
+    print("Hip physiological tau free: ", hip_tau_free_ratio_all)
+    print(f"A reduction of {(hip_tau_without_ratio_all - hip_tau_CL_ratio_all) / hip_tau_without_ratio_all * 100:.2f}% with the HTC")
+    print(f"A reduction of {(hip_tau_free_ratio_all - hip_tau_CL_ratio_all) / hip_tau_free_ratio_all * 100:.2f}% with the NTC")
+
+
+    knee_tau_CL = np.trapz(np.abs(tau_CL[3, aerial_node_start:aerial_node_end]), x=time_vector_CL[aerial_node_start:aerial_node_end])
+    knee_tau_without = np.trapz(np.abs(tau_without[3, aerial_node_start:aerial_node_end]), x=time_vector_without[aerial_node_start:aerial_node_end])
+    knee_tau_free = np.trapz(np.abs(tau_free[3, aerial_node_start:aerial_node_end]), x=time_vector_free[aerial_node_start:aerial_node_end])
+    print("knee tau CL: ", knee_tau_CL)
+    print("knee tau without: ", knee_tau_without)
+    print("knee tau free: ", knee_tau_free)
+    print(f"A reduction of {(knee_tau_without - knee_tau_CL) / knee_tau_without * 100:.2f}% with the HTC")
+    print(f"A reduction of {(knee_tau_free - knee_tau_CL) / knee_tau_free * 100:.2f}% with the NTC")
+
+    knee_tau_CL_ratio_all = np.trapz(np.abs(tau_CL_ratio_all[3, aerial_node_start:aerial_node_end]), x=time_vector_CL[aerial_node_start:aerial_node_end])
+    knee_tau_without_ratio_all = np.trapz(np.abs(tau_without_ratio_all[3, aerial_node_start:aerial_node_end]), x=time_vector_without[aerial_node_start:aerial_node_end])
+    knee_tau_free_ratio_all = np.trapz(np.abs(tau_free_ratio_all[3, aerial_node_start:aerial_node_end]), x=time_vector_free[aerial_node_start:aerial_node_end])
+    print("knee physiological tau CL: ", knee_tau_CL_ratio_all)
+    print("knee physiological tau without: ", knee_tau_without_ratio_all)
+    print("knee physiological tau free: ", knee_tau_free_ratio_all)
+    print(f"A reduction of {(knee_tau_without_ratio_all - knee_tau_CL_ratio_all) / knee_tau_without_ratio_all * 100:.2f}% with the HTC")
+    print(f"A reduction of {(knee_tau_free_ratio_all - knee_tau_CL_ratio_all) / knee_tau_free_ratio_all * 100:.2f}% with the NTC")
+
+
+    arm_tau_CL = np.trapz(np.abs(tau_CL[0, aerial_node_start:aerial_node_end]) + np.abs(tau_CL[1, aerial_node_start:aerial_node_end]), x=time_vector_CL[aerial_node_start:aerial_node_end])
     arm_tau_without = np.trapz(
-        np.abs(tau_without[0, 21:104]) + np.abs(tau_without[1, 21:104]), x=time_vector_without[21:104]
+        np.abs(tau_without[0, aerial_node_start:aerial_node_end]) + np.abs(tau_without[1, aerial_node_start:aerial_node_end]), x=time_vector_without[aerial_node_start:aerial_node_end]
     )
-    arm_tau_free = np.trapz(np.abs(tau_free[0, 21:104]) + np.abs(tau_free[1, 21:104]), x=time_vector_free[21:104])
+    arm_tau_free = np.trapz(np.abs(tau_free[0, aerial_node_start:aerial_node_end]) + np.abs(tau_free[1, aerial_node_start:aerial_node_end]), x=time_vector_free[aerial_node_start:aerial_node_end])
     print("Arm tau CL: ", arm_tau_CL)
     print("Arm tau without: ", arm_tau_without)
     print("Arm tau free: ", arm_tau_free)
-    print(f"A reduction of {(arm_tau_CL - arm_tau_without) / arm_tau_CL * 100:.2f}% with the HTC")
+    print(f"A reduction of {(arm_tau_without - arm_tau_CL) / arm_tau_without * 100:.2f}% with the HTC")
     print(f"A reduction of {(arm_tau_free - hip_tau_CL) / arm_tau_free * 100:.2f}% with the NTC")
+
+    arm_tau_CL_ratio_all = np.trapz(np.abs(tau_CL_ratio_all[0, aerial_node_start:aerial_node_end]) + np.abs(tau_CL_ratio_all[1, aerial_node_start:aerial_node_end]), x=time_vector_CL[aerial_node_start:aerial_node_end])
+    arm_tau_without_ratio_all = np.trapz(
+        np.abs(tau_without_ratio_all[0, aerial_node_start:aerial_node_end]) + np.abs(tau_without_ratio_all[1, aerial_node_start:aerial_node_end]), x=time_vector_without[aerial_node_start:aerial_node_end]
+    )
+    arm_tau_free_ratio_all = np.trapz(np.abs(tau_free_ratio_all[0, aerial_node_start:aerial_node_end]) + np.abs(tau_free_ratio_all[1, aerial_node_start:aerial_node_end]), x=time_vector_free[aerial_node_start:aerial_node_end])
+    print("Arm physiological tau CL: ", arm_tau_CL_ratio_all)
+    print("Arm physiological tau without: ", arm_tau_without_ratio_all)
+    print("Arm physiological tau free: ", arm_tau_free_ratio_all)
+    print(f"A reduction of {(arm_tau_without_ratio_all - arm_tau_CL_ratio_all) / arm_tau_without_ratio_all * 100:.2f}% with the HTC")
+    print(f"A reduction of {(arm_tau_free_ratio_all - arm_tau_CL_ratio_all) / arm_tau_free_ratio_all * 100:.2f}% with the NTC")
 
     # Figure taudot
     fig, axs = plt.subplots(2, 3, figsize=(10, 4))
     num_col = 1
     num_line = 0
 
-    y_max_1 = np.max([abs(taudot_without[0:2, :]), abs(taudot_CL[0:2, :]), abs(taudot_free[0:2, :])])
-    y_max_2 = np.max([abs(taudot_without[2:, :]), abs(taudot_CL[2:, :]), abs(taudot_free[2:, :])])
+    y_min = np.min([taudot_without, taudot_CL, taudot_free])
+    y_max = np.max([taudot_without, taudot_CL, taudot_free])
 
     axs[0, 0].plot([], [], color="tab:green", label="No tucking constraint")
     axs[0, 0].plot([], [], color="tab:blue", label="Kinematic tucking constraints")
@@ -1257,7 +1299,7 @@ if PLOT_TAU_FLAG:
 
         # Réduire la taille des labels des xticks et yticks
         axs[num_line, num_col].tick_params(axis="both", which="major", labelsize=6)
-        axs[num_line, num_col].set_ylim(-2800, 9000)
+        axs[num_line, num_col].set_ylim(y_min*1.05, y_max*1.05)
 
         num_col += 1
         if num_col == 3:
@@ -1340,6 +1382,10 @@ if PLOT_INERTIA_FLAG:
     ax[0].set_xlim(time_min_graph, time_max_graph)
     ax[0].grid(True, linewidth=0.4)
     ax[0].legend(bbox_to_anchor=(1.1, 1.45), ncol=3)
+
+    print("Min somersault inertia CL: ", np.min(inertia_CL[:, 0]))
+    print("Min somersault inertia without: ", np.min(inertia_without[:, 0]))
+    print("Min somersault inertia free: ", np.min(inertia_free[:, 0]))
 
     # Angular momentum
     # Adjust the DoFs to add a free floating base to work around a bug in biornd
@@ -1491,9 +1537,9 @@ if PLOT_INERTIA_FLAG:
     print("Max somersault velocity free: ", np.max(body_velo_free[:, 0]))
 
     # Centrifugal effect
-    centricugal_CL = model.mass() * body_velo_CL[:, 0] ** 2 * np.sqrt(inertia_CL[:, 0] / model.mass())
-    centricugal_without = model.mass() * body_velo_without[:, 0] ** 2 * np.sqrt(inertia_without[:, 0] / model.mass())
-    centricugal_free = model.mass() * body_velo_free[:, 0] ** 2 * np.sqrt(inertia_free[:, 0] / model.mass())
+    centricugal_CL = model.mass() * (body_velo_CL[:, 0] * np.pi / 180) ** 2 * np.sqrt(inertia_CL[:, 0] / model.mass())
+    centricugal_without = model.mass() * (body_velo_without[:, 0] * np.pi / 180) ** 2 * np.sqrt(inertia_without[:, 0] / model.mass())
+    centricugal_free = model.mass() * (body_velo_free[:, 0] * np.pi / 180) ** 2 * np.sqrt(inertia_free[:, 0] / model.mass())
 
     ax[3].plot(
         time_vector_free,
@@ -1551,7 +1597,7 @@ if PLOT_INERTIA_FLAG:
     plt.savefig("Inertia" + "." + format_graph, format=format_graph)
     # plt.show()
 
-    print("Max centrifugal pseudo-force CL: ", np.max(centricugal_CL))
+    print("Max centrifugal pseudo-force CL:", np.max(centricugal_CL))
     print("Max centrifugal pseudo-force without: ", np.max(centricugal_without))
     print("Max centrifugal pseudo-force free: ", np.max(centricugal_free))
 
