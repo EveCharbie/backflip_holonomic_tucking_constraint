@@ -18,7 +18,7 @@ n_shooting = N_SHOOTING
 common_path = "../results/backflip_Vpost_submission_collision_feb25/"
 folder_HTC = common_path + "htc/"
 folder_KTC = common_path + "ktc/"
-folder_NTC = common_path + "htc/"
+folder_NTC = common_path + "ntc/"
 
 file_name = []
 for config, (common_path, str_suffix) in enumerate(zip([folder_KTC, folder_NTC, folder_HTC], ["KTC", "NTC", "HTC"])):
@@ -51,19 +51,19 @@ zipped = zip(
 #         sol.print_cost()
 #
 #
-# data = pickle.load(open(folder_NTC + file_name[1], "rb"))
-# sol = pickle.load(open(folder_NTC + file_name[1][0:-4] + "_sol.pkl", "rb"))
-# sol.ocp = prepare_ocp_free(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
-#
-# with open(f"best_objectives_and_constraints_NTC.txt", "w") as f:
-#     with redirect_stdout(f):
-#         sol.print_cost()
+data = pickle.load(open(folder_NTC + file_name[1], "rb"))
+sol = pickle.load(open(folder_NTC + file_name[1][0:-4] + "_sol.pkl", "rb"))
+sol.ocp = prepare_ocp_free(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
 
-# Run the script section by section otherwise it will not work
-data = pickle.load(open(folder_HTC + file_name[2], "rb"))
-sol = pickle.load(open(folder_HTC + file_name[2][0:-4] + "_sol.pkl", "rb"))
-sol.ocp = prepare_ocp_HTC(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
-
-with open(f"best_objectives_and_constraints_HTC.txt", "w") as f:
+with open(f"best_objectives_and_constraints_NTC.txt", "w") as f:
     with redirect_stdout(f):
         sol.print_cost()
+
+# Run the script section by section otherwise it will not work
+# data = pickle.load(open(folder_HTC + file_name[2], "rb"))
+# sol = pickle.load(open(folder_HTC + file_name[2][0:-4] + "_sol.pkl", "rb"))
+# sol.ocp = prepare_ocp_HTC(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
+#
+# with open(f"best_objectives_and_constraints_HTC.txt", "w") as f:
+#     with redirect_stdout(f):
+#         sol.print_cost()
