@@ -42,7 +42,7 @@ model_path = "../models/Model2D_7Dof_3C_5M_CL_V3_less_markers.bioMod"
 common_path = "backflip_Vpost_submission_collision_feb25/"
 folder_HTC = common_path + "htc/"
 folder_KTC = common_path + "ktc/"
-folder_NTC = common_path + "htc/"
+folder_NTC = common_path + "ntc/"
 
 #  get the data with the smallest cost
 file_name = []
