@@ -41,23 +41,23 @@ zipped = zip(
     file_name,
 )
 
-data = pickle.load(open(folder_KTC + file_name[0], "rb"))
-sol = pickle.load(open(folder_KTC + file_name[0][0:-4] + "_sol.pkl", "rb"))
-sol.ocp = prepare_ocp_KTC(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
-
-sol.print_cost()
-with open(f"best_objectives_and_constraints_KTC.txt", "w") as f:
-    with redirect_stdout(f):
-        sol.print_cost()
-
-
-data = pickle.load(open(folder_NTC + file_name[1], "rb"))
-sol = pickle.load(open(folder_NTC + file_name[1][0:-4] + "_sol.pkl", "rb"))
-sol.ocp = prepare_ocp_free(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
-
-with open(f"best_objectives_and_constraints_NTC.txt", "w") as f:
-    with redirect_stdout(f):
-        sol.print_cost()
+# data = pickle.load(open(folder_KTC + file_name[0], "rb"))
+# sol = pickle.load(open(folder_KTC + file_name[0][0:-4] + "_sol.pkl", "rb"))
+# sol.ocp = prepare_ocp_KTC(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
+#
+# sol.print_cost()
+# with open(f"best_objectives_and_constraints_KTC.txt", "w") as f:
+#     with redirect_stdout(f):
+#         sol.print_cost()
+#
+#
+# data = pickle.load(open(folder_NTC + file_name[1], "rb"))
+# sol = pickle.load(open(folder_NTC + file_name[1][0:-4] + "_sol.pkl", "rb"))
+# sol.ocp = prepare_ocp_free(biorbd_model_path, data["phase_time"], n_shooting, WITH_MULTI_START=False)
+#
+# with open(f"best_objectives_and_constraints_NTC.txt", "w") as f:
+#     with redirect_stdout(f):
+#         sol.print_cost()
 
 data = pickle.load(open(folder_HTC + file_name[2], "rb"))
 sol = pickle.load(open(folder_HTC + file_name[2][0:-4] + "_sol.pkl", "rb"))

@@ -6,12 +6,26 @@ import rerun as rr
 from pyorerun import PhaseRerun, BiorbdModel
 from pyorerun.multi_frame_rate_phase_rerun import MultiFrameRatePhaseRerun
 
-folder = "backflip_Vpost_submission_v3/"
-# folder_HTC = folder + "HTC"
-folder_KTC = folder + "ktc"
-folder_FREE = folder + "ntc"
-folder_HTC = folder + "htc"
-model_path = "../models/Model2D_7Dof_2C_5M_CL_V3.bioMod"
+model_path = "../models/Model2D_7Dof_3C_5M_CL_V3_less_markers.bioMod"
+common_path = "backflip_Vpost_submission_collision_feb25/"
+folder_KTC = common_path + "ktc/"
+folder_HTC = common_path + "htc/"
+folder_NTC = common_path + "ntc/"
+
+#  get the data with the smallest cost
+file_name = []
+for config, (folder, str_suffix) in enumerate(zip([folder_KTC, folder_HTC, folder_NTC], ["KTC", "HTC", "NTC"])):
+    files = [name for name in os.listdir(folder) if name.endswith("_CVG.pkl")]
+    smallest_name, smallest_value = "0", np.inf
+    for file in files:
+
+        data = pickle.load(open(folder + file, "rb"))
+
+        if data["cost"] < smallest_value:
+            smallest_value = data["cost"]
+            smallest_name= file
+            print(f"New smallest value of {str_suffix} : {smallest_value} in file {smallest_name}")
+    file_name.append(smallest_name)
 
 # get matplotlib colors instead
 colors = [
@@ -40,39 +54,19 @@ colors = colors + colors + colors  # duplicate the colors to have enough for all
 
 # Charger les données
 phase_reruns = []
-# for config, (folder, str_suffix) in enumerate(zip([folder_KTC,  folder_FREE], ["KTC",  "NTC"])):
-for config, (folder, str_suffix) in enumerate(zip([folder_HTC, folder_KTC, folder_FREE], ["htc", "ktc", "ntc"])):
-# for config, (folder, str_suffix) in enumerate(zip([folder_FREE], ["ntc"])):
-    #  get the number of _CVG.pkl files in the folder
-    n_files = len([name for name in os.listdir(folder) if name.endswith("G.pkl") and not name.__contains__("no_seed")])
-    print(folder)
-    print(n_files)
-    all_cost = np.array([])
-    for i in range(0, n_files):
 
-        suffix = "CVG"
-        if os.path.isfile(folder + f"/sol_{i}_CVG.pkl") is False:
-            all_cost = np.append(all_cost, np.inf)
-            continue
-            # suffix = "DVG"
+for config, (file, folder, str_suffix) in enumerate(zip(file_name, [folder_KTC, folder_HTC, folder_NTC], ["KTC", "HTC", "NTC"])):
 
-        data = pickle.load(open(folder + f"/sol_{i}_{suffix}.pkl", "rb"))
-        time = np.concatenate([np.array(time) for time in data["time"]], axis=0).squeeze()
-        q = np.concatenate([np.array(q) for q in data["q"]], axis=1)
-        all_cost = np.append(all_cost, np.array(data["cost"]))
-        # # offset
-        q[0, :] = q[0, :] + (config - 1)
+    data = pickle.load(open(folder + f"/{file}", "rb"))
+    time = np.concatenate([np.array(time) for time in data["time"]], axis=0).squeeze()
+    q = np.concatenate([np.array(q) for q in data["q"]], axis=1)
+    # # offset
+    q[0, :] = q[0, :] + (config - 1)
 
-        phase_reruns.append(PhaseRerun(t_span=time, window=f"simulation_{str_suffix}_{i}"))
-        m = BiorbdModel(model_path)
-        if suffix == "DVG":
-            m.options.mesh_color = (0, 0, 0)
-        else:
-            m.options.mesh_color = colors[i - 1]
-        phase_reruns[-1].add_animated_model(m, q)
-
-    where_min = np.argmin(all_cost)
-    data = pickle.load(open(folder + f"/sol_{where_min}_{suffix}.pkl", "rb"))
+    phase_reruns.append(PhaseRerun(t_span=time, window=f"simulation_{str_suffix}_{config}"))
+    m = BiorbdModel(model_path)
+    m.options.mesh_color = colors[config - 1]
+    phase_reruns[-1].add_animated_model(m, q)
 
 mrr2 = MultiFrameRatePhaseRerun(phase_reruns=phase_reruns)
 mrr2.rerun_by_frame("NTC_KTC_HTC")
