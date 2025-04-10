@@ -178,6 +178,7 @@ aerial_node_start = n_nodes[0]
 tuck_node_start = n_nodes[0] + n_nodes[1]
 tuck_node_end = tuck_node_start + n_nodes[2]
 aerial_node_end = n_nodes[0] + n_nodes[1] + n_nodes[2] + n_nodes[3]
+final_node = sum(n_nodes)
 
 PLOT_TAU_FLAG = True
 PLOT_INERTIA_FLAG = True
@@ -214,7 +215,6 @@ dof_names_tau = ["Shoulder", "Elbow", "Hip", "Knee", "Ankle"]
 
 # Solution with closed-loop constraints
 q_CL_rad = data_CL["q_all"][:, :]
-q_CL_rad_original = data_CL["q_all"][:, :]
 q_CL_rad[6, :] = q_CL_rad[6, :] * -1
 q_CL_deg = np.vstack([q_CL_rad[0:2, :], q_CL_rad[2:, :] * 180 / np.pi])
 qdot_CL_rad = data_CL["qdot_all"]
@@ -246,7 +246,6 @@ time_tuck_CL = time_vector_CL[tuck_node_start:tuck_node_end]
 
 # Solution without closed-loop constraints
 q_without_rad = data_without["q_all"][:, :]
-q_without_rad_original = data_without["q_all"][:, :]
 q_without_rad[6, :] = q_without_rad[6, :] * -1
 q_without_deg = np.vstack([q_without_rad[0:2, :], q_without_rad[2:, :] * 180 / np.pi])
 qdot_without_rad = data_without["qdot_all"]
@@ -280,7 +279,6 @@ time_tuck_without = time_vector_without[tuck_node_start:tuck_node_end]
 
 # Solution without any tucking constraints
 q_free_rad = data_free["q_all"][:, :]
-q_free_rad_original = data_free["q_all"][:, :]
 q_free_rad[6, :] = q_free_rad[6, :] * -1
 q_free_deg = np.vstack([q_free_rad[0:2, :], q_free_rad[2:, :] * 180 / np.pi])
 qdot_free_rad = data_free["qdot_all"]
@@ -1673,3 +1671,41 @@ axs[0].set_title("Horizontal contact force [N]")
 axs[1].set_title("Vertical contact force [N]")
 plt.savefig("Contact_forces" + "." + format_graph, format=format_graph, dpi=300)
 plt.show()
+
+
+# Feet contact point displacement (to answer reviewer's comment)
+# Make sure that there is only one (one contact with two axis) since I hard coded the index of the contact
+assert model.nbContacts() == 2
+contact_idx = 0
+
+# Reloading q since there were sign modifications on the joint angles
+q_CL_rad_original = data_CL["q_all"][:, :]
+q_without_rad_original = data_without["q_all"][:, :]
+q_free_rad_original = data_free["q_all"][:, :]
+
+contact_impulsion_position_CL = np.zeros((3, aerial_node_start-1))
+contact_impulsion_position_without = np.zeros((3, aerial_node_start-1))
+contact_impulsion_position_free = np.zeros((3, aerial_node_start-1))
+for i_node in range(aerial_node_start-1):
+    contact_impulsion_position_CL[:, i_node] = model.rigidContact(biorbd.GeneralizedCoordinates(q_CL_rad_original[:, i_node]), contact_idx, True).to_array()
+    contact_impulsion_position_without[:, i_node] = model.rigidContact(biorbd.GeneralizedCoordinates(q_without_rad_original[:, i_node]), contact_idx, True).to_array()
+    contact_impulsion_position_free[:, i_node] = model.rigidContact(biorbd.GeneralizedCoordinates(q_free_rad_original[:, i_node]), contact_idx, True).to_array()
+
+contact_landing_position_CL = np.zeros((3, final_node - aerial_node_end))
+contact_landing_position_without = np.zeros((3, final_node - aerial_node_end))
+contact_landing_position_free = np.zeros((3, final_node - aerial_node_end))
+for i_node, node in enumerate(range(aerial_node_end, final_node)):
+    contact_landing_position_CL[:, i_node] = model.rigidContact(biorbd.GeneralizedCoordinates(q_CL_rad_original[:, node]), contact_idx, True).to_array()
+    contact_landing_position_without[:, i_node] = model.rigidContact(biorbd.GeneralizedCoordinates(q_without_rad_original[:, node]), contact_idx, True).to_array()
+    contact_landing_position_free[:, i_node] = model.rigidContact(biorbd.GeneralizedCoordinates(q_free_rad_original[:, node]), contact_idx, True).to_array()
+
+print("* Toes contact displacement:")
+print(f"Impulsion phase CL: {np.linalg.norm(contact_impulsion_position_CL[:, -1] - contact_impulsion_position_CL[:, 0])} m")
+print(f"Impulsion phase without: {np.linalg.norm(contact_impulsion_position_without[:, -1] - contact_impulsion_position_without[:, 0])} m")
+print(f"Impulsion phase free: {np.linalg.norm(contact_impulsion_position_free[:, -1] - contact_impulsion_position_free[:, 0])} m")
+
+print(f"Landing phase CL: {np.linalg.norm(contact_landing_position_CL[:, -1] - contact_landing_position_CL[:, 0])} m")
+print(f"Landing phase without: {np.linalg.norm(contact_landing_position_without[:, -1] - contact_landing_position_without[:, 0])} m")
+print(f"Landing phase free: {np.linalg.norm(contact_landing_position_free[:, -1] - contact_landing_position_free[:, 0])} m")
+
+
