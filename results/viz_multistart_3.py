@@ -37,39 +37,40 @@ colors = [
 ]
 colors = colors + colors + colors  # duplicate the colors to have enough for all the phases
 
-folder = "with_noise/"
-folder_HTC = folder + "HTC"
-folder_KTC = folder + "KTC"
-folder_FREE = folder + "NTC"
 model_path = "../models/Model2D_7Dof_3C_5M_CL_V3_less_markers.bioMod"
 
-# remove "rgb(" and ")" and split by ","
+common_path = "backflip_Vpost_submission_collision_feb25/"
+folder_HTC = common_path + "htc/"
+folder_KTC = common_path + "ktc/"
+folder_NTC = common_path + "ntc/"
+
 #  get the data with the smallest cost
-file_idx = []
-for config, (folder, str_suffix) in enumerate(zip([folder_KTC, folder_HTC, folder_FREE], ["KTC", "HTC", "NTC"])):
-    n_files = len([name for name in os.listdir(folder) if name.endswith("_CVG.pkl")])
-    smallest_idx, smallest_value = 0, np.inf
-    for i in range(0, n_files):
-        data = pickle.load(open(folder + f"/sol_{i}_CVG.pkl", "rb"))
+file_name = []
+for config, (common_path, str_suffix) in enumerate(zip([folder_KTC, folder_HTC, folder_NTC], ["KTC", "HTC", "NTC"])):
+    files = [name for name in os.listdir(common_path) if name.endswith("_CVG.pkl")]
+    smallest_name, smallest_value = "0", np.inf
+    for file in files:
+
+        data = pickle.load(open(common_path + file, "rb"))
+
         if data["cost"] < smallest_value:
             smallest_value = data["cost"]
-            smallest_idx = i
-            print(f"New smallest value of {str_suffix} : {smallest_value} at index {smallest_idx}")
-    file_idx.append(smallest_idx)
-
+            smallest_name= file
+            print(f"New smallest value of {str_suffix} : {smallest_value} in file {smallest_name}")
+    file_name.append(smallest_name)
 
 # Charger les données
-for config, (folder, str_suffix, file_id) in enumerate(
-    zip([folder_KTC, folder_HTC, folder_FREE], ["KTC", "HTC", "NTC"], file_idx)
+for config, (folder, str_suffix, file) in enumerate(
+    zip([folder_KTC, folder_HTC, folder_NTC], ["KTC", "HTC", "NTC"], file_name)
 ):
     #  get the number of _CVG.pkl files in the folder
     phase_reruns = []
     n_files = len([name for name in os.listdir(folder) if name.endswith("_CVG.pkl")])
-    data = pickle.load(open(folder + f"/sol_{file_id}_CVG.pkl", "rb"))
+    data = pickle.load(open(folder + f"/{file}", "rb"))
     time = np.concatenate([np.array(time) for time in data["time"]], axis=0).squeeze()
     q = np.concatenate([np.array(q) for q in data["q"]], axis=1)
 
-    phase_reruns.append(PhaseRerun(t_span=time[:-1], window=f"s_{file_id}_{str_suffix}"))
+    phase_reruns.append(PhaseRerun(t_span=time[:-1], window=f"s_{file}_{str_suffix}"))
     m = BiorbdModel(model_path)
     m.options.mesh_color = colors[config]
     phase_reruns[-1].add_animated_model(m, q[:, :-1])
