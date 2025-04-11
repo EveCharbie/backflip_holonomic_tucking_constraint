@@ -1,10 +1,18 @@
+
+<div style="text-align: center;">
+    <img src="docs/kinograms.png" alt="kinograms" width="400"/>
+</div>
+
 # Introduction
 This repository contains data and code from optimal control problems (OCP) of a planar digital twin performing a backward tuck somersault. 
 The simulations explore the impact of limb-on-limb contact during the "tuck" phase, 
 specifically how allowing the digital twin to pull its shanks with its hands (using holonomic constraints) affects 
 movement compared to not having any contact or just having contact without force (kinematic constraints).
 
-![kinograms](docs/kinograms.png)
+<video width="600" controls>
+  <source src="docs/three_backtuck.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 # Cite this work
 ```bibtex

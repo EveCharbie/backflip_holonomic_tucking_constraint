@@ -6,7 +6,7 @@ import bioviz
 
 
 biorbd_viz = bioviz.Viz(
-    "three_bar.bioMod",
+    "Model2D_7Dof_2C_5M_CL_V3.bioMod",
     show_gravity_vector=True,
     show_floor=False,
     show_local_ref_frame=True,
