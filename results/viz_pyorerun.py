@@ -4,7 +4,7 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS
 from pyorerun import PhaseRerun, BiorbdModel
 from pyorerun.multi_frame_rate_phase_rerun import MultiFrameRatePhaseRerun
 
-folder = "backflip_Vpost_submission_v3/ntc"
+folder = "backflip_Vpost_submission_collision_feb25"
 filename = "sol_0_CVG.pkl"
 model_path = "../models/Model2D_7Dof_2C_5M_CL_V3.bioMod"
 

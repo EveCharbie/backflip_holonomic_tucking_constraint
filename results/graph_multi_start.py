@@ -7,8 +7,8 @@ from matplotlib import colormaps as cmap
 
 
 # Solution with and without holonomic constraints
-path_sol = "with_noise/KTC"
-path_sol_CL = "with_noise/HTC"
+path_sol = "backflip_Vpost_submission_collision_feb25/ktc"
+path_sol_CL = "backflip_Vpost_submission_collision_feb25/htc"
 sol_CL = path_sol_CL + "/" + "sol_0_CVG.pkl"
 data_CL = pd.read_pickle(sol_CL)
 
@@ -44,7 +44,7 @@ for nb_seg in range(tau_CL.shape[0]):
 i_colors = np.linspace(0.0, 1.0, 20)
 colors = [cmap["viridis"](i) for i in i_colors]
 for file in os.listdir(path_sol):
-    if file.endswith("CVG.pkl"):
+    if file.endswith("CVG.pkl") and not file.__contains__("no_seed"):
         sol_without = path_sol + "/" + file
         data_without = pd.read_pickle(sol_without)
         i_trial = int(file.split("_")[1])
