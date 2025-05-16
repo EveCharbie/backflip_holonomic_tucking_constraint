@@ -17,13 +17,13 @@ https://github.com/user-attachments/assets/d0aacbbe-1787-49c2-922c-8e6e37570ee7
 ```bibtex
 @article{Farr2025,
 title = {Including limb-on-limb holonomic constraints in predictive simulation allows replicating athlete’s backflip technique},
-journal = {submitted to Multibody System Dynamics},
+journal = {Multibody System Dynamics},
 volume = {},
 pages = {},
 year = {2025},
 issn = {},
-doi = {},
-url = {},
+doi = {https://doi.org/10.1007/s11044-025-10082-0},
+url = {https://rdcu.be/emfNR},
 author = {A. Farr, E. Charbonneau, M. Begon and P. Puchaud},
 keywords = {Holonomic constraint, Constraint dynamics, Predictive simulation, Optimal control, Biomechanics, Gymnastics, Closed-loop}
 ```
